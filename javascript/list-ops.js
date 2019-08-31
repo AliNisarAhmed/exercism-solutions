@@ -18,8 +18,7 @@ export class List {
   }
 
   concat(listOfLists) {
-    this.values = [ ...this.values, ...listOfLists.values ];
-    return this;
+    return new List([ ...this.values, ...listOfLists.values ]);
   }
 
   filter(pred) {
