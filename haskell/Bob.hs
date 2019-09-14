@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Bob (responseFor) where
 
 import qualified Data.Text as T
@@ -12,24 +14,19 @@ isQuestion text =
 
 isAllUpper :: Text -> Bool
 isAllUpper text
-  | filtered == "" = False
-  | otherwise = all isUpper filtered
+  | T.null filtered = False
+  | otherwise = T.all isUpper filtered
     where
-      filtered = filter isAlpha (T.unpack text)
+      filtered = T.filter isAlpha text
 
 responseFor :: Text -> Text
-responseFor text =
-  if stripped == T.empty
-  then T.pack "Fine. Be that way!"
-  else
-    if isQuestion stripped && isAllUpper stripped
-    then T.pack "Calm down, I know what I'm doing!"
-    else
-      if isQuestion stripped
-      then T.pack "Sure."
-      else
-        if isAllUpper text
-        then T.pack "Whoa, chill out!"
-        else T.pack "Whatever."
-  where
-    stripped = T.strip text
+responseFor text
+    | T.null stripped = "Fine. Be that way!"
+    | isAQuestion && isAllUpper stripped
+      = "Calm down, I know what I'm doing!"
+    | isAQuestion = "Sure."
+    | isAllUpper text = "Whoa, chill out!"
+    | otherwise = "Whatever."
+      where
+        stripped = T.strip text
+        isAQuestion = isQuestion stripped
